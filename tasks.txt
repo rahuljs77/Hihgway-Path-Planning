@@ -1,0 +1,90 @@
+Tasks
+-----
+
+DONE Code SensorData (environment and ego)
+DONE Code Behavior class (ignore the Road dependency)
+DONE Move Point to Trajectory file.
+DONE Refactor classes (see the draft in my notepad)
+DONE   Remove all the commented-code
+  Only leave the minimum members for each class (At this moment we don't need the acceleration for each vehicle for example)
+DONE Code Map
+DONE Test Map
+DONE Minimum test for the Trajectory generation
+DONE   straight line in x, y
+DONE   straight line in s, d
+DONE   spline line in s, d (Q&A Walkthrough)
+DONE Code PopulateTraffic in the Road class
+DONE Minimum test for PopulateTraffic with stubbed data
+DONE   Stub data. 2 or 3 vehicles + ego
+
+DONE Design a generic SplineStrategy for the trajectory generator, so that it generates a trajectory given the starting kinematics, goal point and a reference velocity (add the latter to TrajectoryStrategy). Think about the perturbed goals... who is going to calculate several trajectories and get the best one? Behavior or TrajectoryStrategy? Consider also previous path, we shouldn't stomp on it before getting the next best path...
+DONE Code it
+DONE Vehicle::UpdateKinematics -> UpdateState? 
+DONE  Who should set the current lane for each vehicle? The vehicle itself? or the Road?... Yes, the vehicle can see the road, so the vehicle itself!
+DONE Modify stub so that it has frenet data in the environment vehicles
+DONE Code road.IsEmpty(s_down, s_up, d_left, d_right)
+DONE Code a simple logic to test the lane change with the spline generator (see behavior.cpp UpdateState())
+DONE Add d_desired[state] in Behavior class, so that we can set the goal point in the trajectory strategy. Also s_desired ??
+DONE Code the lane inside Vehicle::UpdateState()
+DONE SetPossibleTransitions(lane)
+  if we are on the most right lane we can change lane right for example
+  set possible transitions on each UpdateState() call based on the current lane
+DONE GetDesiredD(lane, state)
+  d_by_lane_and_state[lane][state]
+    d_by_lane_and_state[0][KL] = d_by_lane[0]
+    d_by_lane_and_state[0][PCLR] = d_by_lane[0] + LANE_WIDTH/4
+    d_by_lane_and_state[0][CLR] = d_by_lane[1]
+    
+    d_by_lane_and_state[1][KL] = d_by_lane[1]
+    d_by_lane_and_state[1][PCLL] = d_by_lane[1] - LANE_WIDTH/4
+    d_by_lane_and_state[1][CLL] = d_by_lane[0]
+    d_by_lane_and_state[1][PCLR] = d_by_lane[1] + LANE_WIDTH/4
+    d_by_lane_and_state[1][CLR] = d_by_lane[2]
+    
+    d_by_lane_and_state[2][KL] = d_by_lane[2]
+    d_by_lane_and_state[2][PCLL] = d_by_lane[2] - LANE_WIDTH/4
+    d_by_lane_and_state[2][CLL] = d_by_lane[1]
+DONE Move CostFunction out of TrajectoryStrategy, into Behavior.
+DONE   CalculateCost(Trajectory t)
+DONE Design CostFunction
+DONE Design high level of the loop of the trajectory generation: 
+  Behavior should calculate several trajectories (perturbed goals) for each possible state (d_desired), calculate the cost for each one and keep the best one.
+DONE Code some cost functions (collision detection)
+DONE Design how to pass the best trajectory detected to the path planner
+DONE   TrajectoryStrategy assumes membr "trajectory" contains the previous trajectory.
+DONE   Create a new strategy (copy) each time we generate a trajectory
+DONE Bug with the collision detection algorithm. Design how to measure distance so that it doesn't detect collision with vehicles in other lanes when it is keeping its lane... consider using the yaw
+DONE  consider the yaw is measured in degrees. Convert in the beginning.
+DONE Test behavior algorithm without perturbed goal
+DONE Design road prediction
+DONE Integrate road prediction
+DONE Potential BUG: velocity of vehicles in MPH o MPS? reference_speed in MPH!
+DONE Check if we are always passing objects as references in function arguments.
+DONE Measure time
+DONE Potential BUG: when we run the trajectory generation with a different reference speed there might be a sudden change in speed which might turn into a high acceleration and jerk. Speed increments should be small enough to overcome this.
+DONE Try the front vehicle tracking algorithm
+
+Jerk is in x and y, not just magnitude
+  same for acceleration
+Penalize going out of the lane
+Penalize not being on the center lane (lane = 1) or not being in the center of the lane (d = 2, 6, 10)
+// Warning, the speed loop (in Behavior::UpdateState()) could lead to high acceleration and jerk transitions. 
+      // May be we could limit it to just 3 values: -speed_inc, 0, +speed_inc
+DONE Test adding more waypoints to the spline strategy
+DONE Add perturbed goals logic
+Test behavior
+DONE Code more cost functions
+DONE Set weights
+DONE Update UML
+Code lanes_available detection inside Vehicle::UpdateState()
+DONE Test the algorithm
+
+
+Refactor: Road::DToLane() => Road::GetLane()
+Refactor:  Move the whole "space ahead vehicle detection" to a method inside road or vehicle.
+Refactor: In the PathPlanner class set directly how many points has the ego vehicle passed, instead of copying the previous_path vector over and over. We are not using it, we are just using it's size. This way we can know from outside of TrajectoryStrategy, if N_points_passed is 0 and skip all the trajectory generation algorithm.
+Refactor: Use some data structure for the vehicles in the road so that we always start iterating by the closest vehicle to the ego vehicle. A sorted list for example. Or maybe just ignore vehicles that are far away when we populate the road.
+Refactor: TrajectoryStrategy -> TrajectoryGenerator
+Refactor: TrajectoryStratgy::GenerateTrajectory() : returns Trajectory
+Refactor: remove "using namespace std" from all header files.
+Refactor: Move duplicated constant parameters to a configuration file.
