@@ -30,7 +30,7 @@ This work is part of the Self-Driving Car Engineer Nanodegree Program at Udacity
 The algorithms have been tested in a simulator provided by Udacity for about 10 minutes without incidents, driving more than 6 miles.
 and here you can see a short example:
 
-![GIF Example][video]
+![](img/40secs_5fps.gif)
 
 
 ## Software Architecture
