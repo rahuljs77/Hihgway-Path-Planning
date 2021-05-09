@@ -28,7 +28,6 @@ This work is part of the Self-Driving Car Engineer Nanodegree Program at Udacity
 ## Results
 
 The algorithms have been tested in a simulator provided by Udacity for about 10 minutes without incidents, driving more than 6 miles.
-[A realization of this has been uploaded to YouTube in this link,](https://youtu.be/a_IoRniavFc)
 and here you can see a short example:
 
 ![GIF Example][video]
@@ -154,8 +153,7 @@ One of the most important cost functions implemented in the trajectory generatio
 This is one of the hardest points to achieve, because there are times when several trajectories have almost the same cost so it loops between CHANGE LANE and KEEP LANE states. When that happens, the ego vehicle ends up going straight in the line that divides lanes. In order to overcome this problem I added a functionality to allow the ego vehicle to complete the CHANGE LANE state if it has decided to start it (bypassing the possibility to KEEP LANE). This way if it decides to change lanes, it won't stop till it is in the next lane, unless a new vehicle appears and the change suddenly becomes risky.
 
 **The car is able to change lanes**
-As you can see in the GIF and in the 
-[YouTube video](https://youtu.be/a_IoRniavFc)
+As you can see in the GIF 
 the ego vehicle changes lanes very well when there is a vehicle in front of him going slower and there is no traffic in the next lane
 
 
